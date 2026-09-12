@@ -1,0 +1,1 @@
+"""NewsBot application package."""

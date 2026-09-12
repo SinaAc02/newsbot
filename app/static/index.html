@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Create source-based news reports with your own language model." />
+    <title>NewsBot</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="NewsBot home">
+          <span class="brand-mark">N</span>
+          <span>NewsBot</span>
+        </a>
+        <button id="settings-button" class="quiet-button" type="button">Settings</button>
+      </header>
+
+      <section id="setup-view" class="panel hidden" aria-labelledby="setup-title">
+        <p class="eyebrow">FIRST-TIME SETUP</p>
+        <h1 id="setup-title">Connect your sources</h1>
+        <p class="intro">Your keys stay in the backend's local <code>.env</code> file.</p>
+
+        <form id="setup-form" class="form-grid">
+          <label>
+            NewsAPI key <span class="optional">optional; RSS still works</span>
+            <input id="newsapi-key" type="password" autocomplete="off" />
+          </label>
+
+          <label>
+            Language model
+            <select id="llm-provider">
+              <option value="ollama">Local Ollama</option>
+              <option value="cloud">Cloud / OpenAI-compatible</option>
+            </select>
+          </label>
+
+          <label>
+            Base URL
+            <input id="llm-base-url" type="url" value="http://127.0.0.1:11434" required />
+          </label>
+
+          <label>
+            Model name
+            <input id="llm-model" type="text" value="qwen3:8b" required />
+          </label>
+
+          <label id="llm-key-row" class="hidden">
+            LLM API key
+            <input id="llm-api-key" type="password" autocomplete="off" />
+          </label>
+
+          <div id="setup-error" class="message error hidden" role="alert"></div>
+          <button class="primary-button" type="submit">Save and continue</button>
+        </form>
+      </section>
+
+      <section id="research-view" class="workspace hidden" aria-labelledby="research-title">
+        <div class="query-panel">
+          <p class="eyebrow">NEWS RESEARCH</p>
+          <h1 id="research-title">What do you want to understand?</h1>
+          <form id="research-form">
+            <label>
+              Topic
+              <textarea id="topic" rows="4" maxlength="200" placeholder="For example: recent changes to EU artificial intelligence rules" required></textarea>
+            </label>
+            <div class="form-row">
+              <label>
+                Language
+                <select id="language">
+                  <option value="en">English</option>
+                  <option value="de">German</option>
+                </select>
+              </label>
+              <label>
+                Time range
+                <select id="days">
+                  <option value="1">Past day</option>
+                  <option value="7" selected>Past week</option>
+                  <option value="30">Past month</option>
+                </select>
+              </label>
+            </div>
+            <div id="research-error" class="message error hidden" role="alert"></div>
+            <button id="research-button" class="primary-button" type="submit">Create report</button>
+            <div id="progress-box" class="progress-box hidden" aria-live="polite">
+              <div class="progress-heading">
+                <span class="spinner" aria-hidden="true"></span>
+                <strong>Current progress</strong>
+              </div>
+              <ol id="progress-list"></ol>
+            </div>
+          </form>
+        </div>
+
+        <article id="result-panel" class="result-panel empty-state">
+          <div id="empty-result">
+            <span class="document-icon">≡</span>
+            <h2>Your report will appear here</h2>
+            <p>It will include the sources used to write it.</p>
+          </div>
+          <div id="report-result" class="hidden">
+            <p class="eyebrow">REPORT</p>
+            <h2 id="report-topic"></h2>
+            <div id="report-text" class="report-content"></div>
+            <h3>Sources</h3>
+            <ol id="source-list" class="source-list"></ol>
+          </div>
+        </article>
+      </section>
+    </main>
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
