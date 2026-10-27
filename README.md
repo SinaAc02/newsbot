@@ -1,51 +1,53 @@
 # NewsBot
 
-NewsBot searches recent news and turns the results into a short report with
-numbered sources. It uses Google News RSS, with optional NewsAPI results, and can
-generate reports with local Ollama or an OpenAI-compatible API.
+NewsBot searches news and writes a short report with numbered sources. It
+combines Google News RSS with optional NewsAPI results, then sends the headlines
+and available summaries to a local Ollama model or an OpenAI-compatible API.
 
-## Demo
-
-![NewsBot showing a report about the USA and Iran](assets/demo.png)
+![NewsBot report about the USA and Iran](assets/demo.png)
 
 ## Features
 
-- English and German news searches
-- Duplicate article removal
-- Live progress messages
-- Formatted reports with citations
-- Local storage for API settings
+- English and German searches
+- Duplicate removal by title and URL
+- Progress updates during search and report generation
+- Markdown reports with source links
+- A settings screen for the model connection and API keys
 
 ## Run on Windows
 
-1. Create a virtual environment:
+```powershell
+git clone https://github.com/SinaAc02/newsbot.git
+cd newsbot
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+```
 
-   ```powershell
-   py -m venv .venv
-   ```
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) and complete the model setup.
+For Ollama, start the service and install the model you enter in the settings.
+For an API-hosted model, enter its base URL, model name and API key.
 
-2. Install the packages:
+Google News RSS is available by default. Adding a NewsAPI key enables the
+second search provider. Settings and keys are stored in the local `.env` file,
+which is ignored by Git.
 
-   ```powershell
-   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-   ```
+## Reports and sources
 
-3. Start the app:
+Each report uses up to 15 deduplicated results. The model receives their titles,
+publishers, dates and summaries, with each summary limited to 500 characters.
+Use the source links to read the articles and check important claims.
 
-   ```powershell
-   .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
-   ```
-
-4. Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
-
-The first screen asks for the model settings. Google News RSS works without a
-key, and NewsAPI is optional. The local `.env` file is ignored by Git.
+The time-range selector applies to NewsAPI requests. Google News RSS searches
+use the topic and selected language. Report coverage depends on what those
+providers return, and generated reports can contain mistakes.
 
 ## Tests
-
-Install the development requirements and run the tests:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 .\.venv\Scripts\python.exe -m pytest
 ```
+
+The tests cover settings storage, duplicate handling, report-prompt construction,
+progress events and the setup requirement for research requests.

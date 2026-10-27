@@ -93,7 +93,7 @@ def create_app(settings_manager: SettingsManager | None = None) -> FastAPI:
                 prompt = build_report_prompt(data.topic.strip(), articles)
                 yield _event(
                     "status",
-                    f"{settings.llm_model} is reading the sources and writing the report…",
+                    f"{settings.llm_model} is writing from the article headlines and summaries…",
                 )
                 report = await LLMClient(settings).generate(prompt, NEWS_SYSTEM_PROMPT)
                 yield _event("status", "Report complete.")
